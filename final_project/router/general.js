@@ -5,7 +5,7 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 // ✅ Register a new user
-public_users.post("/register", (req, res) => {
+public_users.post("/register", (req,res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -55,8 +55,23 @@ public_users.get('/author/:author', function (req, res) {
   }
 });
 
+// ✅ Get book details based on title
 public_users.get('/title/:title', function (req, res) {
-  return res.status(300).json({message: "Yet to be implemented"});
+  const title = req.params.title;
+  const keys = Object.keys(books);
+  const booksByTitle = [];
+
+  keys.forEach(key => {
+    if (books[key].title.toLowerCase() === title.toLowerCase()) {
+      booksByTitle.push(books[key]);
+    }
+  });
+
+  if (booksByTitle.length > 0) {
+    res.send(JSON.stringify(booksByTitle, null, 4));
+  } else {
+    res.status(404).json({ message: "No books found with this title" });
+  }
 });
 
 // ✅ Get book reviews based on ISBN
