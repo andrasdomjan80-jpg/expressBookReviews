@@ -96,7 +96,7 @@ function buildSelfRootUrl(req) {
 }
 
 /**
- * ✅ Task 1: Get all books using Axios (async & promise)
+ * ✅ Task 10: Get all books using Axios (async)
  */
 
 // 🧭 Async/Await version
@@ -113,35 +113,11 @@ public_users.get('/books/async', async (req, res) => {
   }
 });
 
-// 🔗 Promise callbacks version
-public_users.get('/books/promise', (req, res) => {
-  const url = `${buildSelfRootUrl(req)}/`;
-  axios.get(url)
-    .then(response => res.status(200).json(response.data))
-    .catch(err => res.status(500).json({
-      message: "Error fetching books with Promise callbacks",
-      error: err.message
-    }));
-});
 
 /**
- * ✅ Task 2: Get book details by ISBN using Axios (async & promise)
+ * ✅ Task 11: Get book details by ISBN using Axios (promise)
  */
 
-// 🧭 Async/Await version
-public_users.get('/isbn-async/:isbn', async (req, res) => {
-  try {
-    const isbn = req.params.isbn;
-    const url = `${buildSelfRootUrl(req)}/isbn/${isbn}`;
-    const response = await axios.get(url);
-    return res.status(200).json(response.data);
-  } catch (err) {
-    return res.status(500).json({
-      message: "Error fetching book details with async/await",
-      error: err.message
-    });
-  }
-});
 
 // 🔗 Promise callbacks version
 public_users.get('/isbn-promise/:isbn', (req, res) => {
@@ -157,7 +133,7 @@ public_users.get('/isbn-promise/:isbn', (req, res) => {
 });
 
 /**
- * ✅ Task 3: Get book details by Author using Axios (async & promise)
+ * ✅ Task 12: Get book details by Author using Axios (async)
  */
 
 // 🧭 Async/Await version
@@ -175,38 +151,10 @@ public_users.get('/author-async/:author', async (req, res) => {
   }
 });
 
-// 🔗 Promise callbacks version
-public_users.get('/author-promise/:author', (req, res) => {
-  const author = req.params.author;
-  const url = `${buildSelfRootUrl(req)}/author/${author}`;
-
-  axios.get(url)
-    .then(response => res.status(200).json(response.data))
-    .catch(err => res.status(500).json({
-      message: "Error fetching books by author with Promise callbacks",
-      error: err.message
-    }));
-});
-
 /**
- * ✅ Task 4: Get book details by Title using Axios (async & promise)
+ * ✅ Task 13: Get book details by Title using Axios (promise)
  */
-
-// 🧭 Async/Await version
-public_users.get('/title-async/:title', async (req, res) => {
-  try {
-    const title = req.params.title;
-    const url = `${buildSelfRootUrl(req)}/title/${title}`;
-    const response = await axios.get(url);
-    return res.status(200).json(response.data);
-  } catch (err) {
-    return res.status(500).json({
-      message: "Error fetching books by title with async/await",
-      error: err.message
-    });
-  }
-});
-
+git config --global user.email “andrasdomjan80@gmail.com”
 // 🔗 Promise callbacks version
 public_users.get('/title-promise/:title', (req, res) => {
   const title = req.params.title;
