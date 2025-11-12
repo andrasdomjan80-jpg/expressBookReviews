@@ -46,10 +46,64 @@ regd_users.post("/login", (req, res) => {
   });
 });
 
-// Add a book review (to be implemented later)
+// Add or modify a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  return res.status(300).json({ message: "Yet to be implemented" });
-});
+    const { isbn } = req.params;
+    const review = req.query.review;
+  
+    // Prefer username from verified JWT payload, fallback to session copy
+    const username =
+      (req.user && req.user.data) ||
+      (req.session && req.session.authorization && req.session.authorization.username);
+  
+    if (!username) return res.status(401).json({ message: "Not authenticated" });
+    if (!review || !review.trim()) {
+      return res.status(400).json({ message: "Review text is required in the 'review' query parameter" });
+    }
+  
+    const book = books[isbn];
+    if (!book) return res.status(404).json({ message: "Book not found" });
+  
+    if (!book.reviews || typeof book.reviews !== "object") book.reviews = {};
+  
+    const isUpdate = Object.prototype.hasOwnProperty.call(book.reviews, username);
+    book.reviews[username] = review;
+  
+    return res.status(200).json({
+      message: isUpdate ? "Review updated successfully" : "Review added successfully",
+      isbn,
+      user: username,
+      review: book.reviews[username]
+    });
+  });
+  
+  // Delete the logged-in user's review for a book
+  regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const { isbn } = req.params;
+  
+    const username =
+      (req.user && req.user.data) ||
+      (req.session && req.session.authorization && req.session.authorization.username);
+  
+    if (!username) return res.status(401).json({ message: "Not authenticated" });
+  
+    const book = books[isbn];
+    if (!book) return res.status(404).json({ message: "Book not found" });
+  
+    if (!book.reviews || typeof book.reviews !== "object") {
+      return res.status(404).json({ message: "No reviews found for this book" });
+    }
+  
+    if (!Object.prototype.hasOwnProperty.call(book.reviews, username)) {
+      return res.status(404).json({ message: "No review by this user for this book" });
+    }
+  
+    delete book.reviews[username];
+  
+    return res.status(200).json({ message: "Review deleted successfully", isbn, user: username });
+  });
+  
+  
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
